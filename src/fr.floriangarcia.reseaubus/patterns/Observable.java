@@ -1,4 +1,4 @@
-package patterns;
+package fr.floriangarcia.reseaubus.patterns;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,15 +11,15 @@ public class Observable {
         observateurs = new ArrayList<>();
     }
 
-    protected void notifierObservateurs(){
-        observateurs.forEach(Observateur::notifier);
+    public void notifierObservateurs(Object object){
+        observateurs.forEach(o -> o.notifier(object));
     }
 
-    protected void ajouterObservateur(Observateur observateur){
+    public void ajouterObservateur(Observateur observateur){
         observateurs.add(observateur);
     }
 
-    protected void supprimerObservateur(Observateur observateur){
+    public void supprimerObservateur(Observateur observateur){
         observateurs.remove(observateur);
     }
 }
