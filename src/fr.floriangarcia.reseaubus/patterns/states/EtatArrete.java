@@ -7,10 +7,15 @@ public class EtatArrete implements EtatBus {
 
     @Override
     public void partir(Bus bus) {
-        bus.setArretSuivant(bus.getLigneBus().getNextArret(bus.getArretActuel())); // Définition du prochain arrêt
-        bus.getArretActuel().setBusDansArret(null); // Suppression du bus dans l'arrêt actuel
-        bus.setArretActuel(null); // Arrêt actuel null car en déplacement
+        // Définition du prochain arrêt
+        bus.setArretSuivant(bus.getLigneBus().getNextArret(bus.getArretActuel()));
+        // Suppression du bus dans l'arrêt actuel
+        bus.getArretActuel().setBusDansArret(null);
+        // Arrêt actuel null car en déplacement
+        bus.setArretActuel(null);
+        // Génération d'un temps fictif de trajet entre deux valeurs
         bus.getConditionCirculation().setTempsTrajet(Utils.getRandomIntBetween(5, 10));
+        // Changement d'état du bus
         bus.setEtat(new EtatDeplacement());
     }
 
