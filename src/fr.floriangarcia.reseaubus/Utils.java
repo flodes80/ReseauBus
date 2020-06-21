@@ -30,24 +30,29 @@ public class Utils {
         Bus bus5 = new Bus(5);
 
         // Création des arrêts
-        Arret arret1 = new Arret("1", 20, 20);
-        Arret arret2 = new Arret("2", 20, 120);
-        Arret arret3 = new Arret("3", 20, 220);
-        Arret arret4 = new Arret("4", 20, 320);
-        Arret arret5 = new Arret("5", 420, 220);
-        Arret arret6 = new Arret("6", 120, 20);
-        Arret arret7 = new Arret("7", 220, 20);
-        Arret arret8 = new Arret("8", 320, 20);
-        Arret arret9 = new Arret("9", 420, 20);
-        Arret arret10 = new Arret("10", 520, 20);
+        Arret arret1 = new Arret("1", 144, 30);
+        Arret arret2 = new Arret("2", 564, 40);
+        Arret arret3 = new Arret("3", 1040, 213);
+        Arret arret4 = new Arret("4", 842, 624);
+        Arret arret5 = new Arret("5", 589, 241);
+        Arret arret6 = new Arret("6", 356, 725);
+        Arret arret7 = new Arret("7", 620, 620);
+        Arret arret8 = new Arret("8", 720, 720);
+        Arret arret9 = new Arret("9", 920, 820);
+        Arret arret10 = new Arret("10", 120, 920);
 
-        // Créaiton d'une ligne de bus
+        // Création de lignes de bus
         LigneBus ligneBus1 = new LigneBus("1");
         ligneBus1.addArret(arret1);
         ligneBus1.addArret(arret2);
         ligneBus1.addArret(arret3);
         ligneBus1.addArret(arret4);
         ligneBus1.addArret(arret5);
+        ligneBus1.addArret(arret6);
+        ligneBus1.addArret(arret7);
+        ligneBus1.addArret(arret8);
+        ligneBus1.addArret(arret9);
+        ligneBus1.addArret(arret10);
 
         // Attribution ligne de bus aux bus
         bus1.setLigneBus(ligneBus1);
