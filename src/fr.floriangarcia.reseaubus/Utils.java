@@ -54,13 +54,26 @@ public class Utils {
         ligneBus1.addArret(arret9);
         ligneBus1.addArret(arret10);
 
+        LigneBus ligneBus2 = new LigneBus("2");
+        ligneBus2.addArret(arret1);
+        ligneBus2.addArret(arret5);
+        ligneBus2.addArret(arret7);
+        ligneBus2.addArret(arret3);
+
         // Attribution ligne de bus aux bus
         bus1.setLigneBus(ligneBus1);
         bus2.setLigneBus(ligneBus1);
+        bus3.setLigneBus(ligneBus1);
+        bus4.setLigneBus(ligneBus2);
+        bus5.setLigneBus(ligneBus2);
 
         // Attribution arrêt initial au bus
         bus1.setArretActuel(arret1);
         bus2.setArretActuel(arret2);
+        bus3.setArretActuel(arret3);
+
+        bus4.setArretActuel(arret5);
+        bus5.setArretActuel(arret7);
 
         // Création du réseau de bus
         ReseauBus reseauBus = new ReseauBus();
@@ -68,9 +81,14 @@ public class Utils {
         // Ajout des bus au réseau de bus
         reseauBus.addBus(bus1);
         reseauBus.addBus(bus2);
+        reseauBus.addBus(bus3);
+        reseauBus.addBus(bus4);
+        reseauBus.addBus(bus5);
 
         // Ajout des lignes de bus au réseau de bus
         reseauBus.addLigneBus(ligneBus1);
+        reseauBus.addLigneBus(ligneBus2);
+
         return reseauBus;
     }
 }

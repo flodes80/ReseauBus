@@ -2,9 +2,6 @@ package fr.floriangarcia.reseaubus.gui;
 
 import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
-import com.mxgraph.util.mxEvent;
-import com.mxgraph.util.mxEventObject;
-import com.mxgraph.util.mxEventSource;
 import com.mxgraph.view.mxGraph;
 import fr.floriangarcia.reseaubus.Utils;
 import fr.floriangarcia.reseaubus.entities.Arret;
@@ -15,9 +12,6 @@ import fr.floriangarcia.reseaubus.patterns.Observateur;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.sql.SQLOutput;
 import java.util.HashMap;
 
 public class GUIReseauBus extends JFrame implements Observateur {
@@ -25,22 +19,17 @@ public class GUIReseauBus extends JFrame implements Observateur {
 
     private static ReseauBus reseauBus;
     private mxGraph graph;
-    private mxGraphComponent graphComponent;
-    private JButton startButton, stopButton;
-    private final int largeurRect = 100;
-    private final int hauteurRect = 30;
     private final HashMap<String, Object> arretVertexMap = new HashMap<>(); // Hashmap des rectangles représentants les arrêts. La clé est le nom de l'arrêt
-    private final HashMap<String, Object> arretEdgeMap = new HashMap<>(); // Hashmap des liens vers les arrêts. La clé est le nom de l'arrêt vers lequel il pointe
 
     public GUIReseauBus() {
         super("Reseau de bus");
-        graphComponent = new mxGraphComponent(getGraphReseauBus());
+        mxGraphComponent graphComponent = new mxGraphComponent(getGraphReseauBus());
         graphComponent.setEnabled(false); // Empêcher modification
 
-        startButton = new JButton("Start");
+        JButton startButton = new JButton("Start");
         startButton.addActionListener(actionEvent -> reseauBus.start());
 
-        stopButton = new JButton("Stop");
+        JButton stopButton = new JButton("Stop");
         stopButton.addActionListener(actionEvent -> reseauBus.stop());
 
         getContentPane().add(graphComponent, BorderLayout.CENTER);
@@ -88,7 +77,7 @@ public class GUIReseauBus extends JFrame implements Observateur {
                 }
                 // Sinon création
                 else{
-                    v1 = graph.insertVertex(parent, null, currentArret, currentArret.getPosX(), currentArret.getPosY(), largeurRect, hauteurRect);
+                    v1 = graph.insertVertex(parent, null, currentArret, currentArret.getPosX(), currentArret.getPosY(), 100, 30);
                     arretVertexMap.put(currentArret.getNom(), v1);
                 }
 
@@ -145,7 +134,7 @@ public class GUIReseauBus extends JFrame implements Observateur {
      * @param bus Bus désiré
      */
     private void updateEdgeForBus(Bus bus){
-        mxCell edge = null;
+        mxCell edge;
         Arret nextArret = bus.getArretSuivant();
         Arret currentArret = bus.getArretActuel();
         Arret previousArret = nextArret == null ? bus.getLigneBus().getPreviousArret(currentArret) : bus.getLigneBus().getPreviousArret(nextArret);
@@ -171,7 +160,7 @@ public class GUIReseauBus extends JFrame implements Observateur {
      * Fonction permettant d'obtenir l'edge entre deux arrêt
      * @param arretSource Arrêt de départ
      * @param arretTarget Arrêt de destination
-     * @return
+     * @return edge trouvé ou null
      */
     private mxCell getEdge(Arret arretSource, Arret arretTarget){
         mxCell vSource = (mxCell) arretVertexMap.get(arretSource.getNom());
@@ -190,7 +179,7 @@ public class GUIReseauBus extends JFrame implements Observateur {
     private void updateGraph() {
         graph.getModel().beginUpdate();
 
-        reseauBus.getBus().forEach(b -> updateEdgeForBus(b));
+        reseauBus.getBus().forEach(this::updateEdgeForBus);
 
         graph.getModel().endUpdate();
         graph.refresh();
