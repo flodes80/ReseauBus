@@ -4,7 +4,7 @@ import java.io.*;
 
 public class JsonManager {
     private static JsonManager instance = null;
-    private static final String FILE_NAME = "C:\\Users\\vaent\\eclipse-workspace\\TD2\\banque.json";
+    private static String fileName;
 
     private JsonManager() {
     }
@@ -19,7 +19,7 @@ public class JsonManager {
     public String read() {
         String json = "";
         try{
-            InputStream ips=new FileInputStream(FILE_NAME);
+            InputStream ips=new FileInputStream(fileName);
             InputStreamReader ipsr=new InputStreamReader(ips);
             BufferedReader br=new BufferedReader(ipsr);
             String ligne;
@@ -38,7 +38,7 @@ public class JsonManager {
 
     public void write(String json) {
         // Ecriture sur le support physique
-        File fichier =  new File(FILE_NAME) ;
+        File fichier =  new File(fileName) ;
         Writer writer = null ;
         try {
 
@@ -60,5 +60,9 @@ public class JsonManager {
                 }
             }
         }
+    }
+
+    public static void setFileName(String fileName) {
+        JsonManager.fileName = fileName;
     }
 }
