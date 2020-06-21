@@ -15,15 +15,14 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class GUIReseauBus extends JFrame implements Observateur {
-    /** Pour éviter un warning venant du JFrame */
     private static final long serialVersionUID = -8123406571694511514L;
 
     private static ReseauBus reseauBus;
     private mxGraph graph;
     private final int largeurRect = 100;
     private final int hauteurRect = 30;
-    private HashMap<String, Object> arretVertexMap = new HashMap<>();
-    private HashMap<String, Object> arretEdgeMap = new HashMap<>(); // Hashmap des liens vers les arrêts. La clé est le nom de l'arrêt vers lequel il pointe
+    private final HashMap<String, Object> arretVertexMap = new HashMap<>(); // Hashmap des rectangles représentants les arrêts. La clé est le nom de l'arrêt
+    private final HashMap<String, Object> arretEdgeMap = new HashMap<>(); // Hashmap des liens vers les arrêts. La clé est le nom de l'arrêt vers lequel il pointe
 
     public GUIReseauBus() {
         super("Reseau de bus");
@@ -43,6 +42,10 @@ public class GUIReseauBus extends JFrame implements Observateur {
         reseauBus.ajouterObservateur(this); // Ajout de sois même en observateur
     }
 
+    /**
+     * Obtention du graph du réseau de bus
+     * @return le graph dessiné
+     */
     private mxGraph getGraphReseauBus() {
         graph = new mxGraph();
         Object parent = graph.getDefaultParent();
@@ -57,6 +60,11 @@ public class GUIReseauBus extends JFrame implements Observateur {
         return graph;
     }
 
+    /**
+     * Méthode permettant de dessiner les différents arrêts et de les reliers entre-eux
+     * @param graph Graphique utilisé pour dessiner
+     * @param parent Parent du graph
+     */
     private void drawArrets(mxGraph graph, Object parent) {
         // Parcours de toutes les lignes de bus
         for(LigneBus ligneBus : reseauBus.getLignesBus()){
@@ -70,21 +78,24 @@ public class GUIReseauBus extends JFrame implements Observateur {
                 // Relier arrêt courant avec le précédent
                 if(lastArret != null){
                     Object v2 = arretVertexMap.get(lastArret.getNom()); // Vertex 2
-                    Object e = graph.insertEdge(parent, null, null, v2, v1);
-                    arretEdgeMap.put(currentArret.getNom(), e); // Enregistrement du lien dans la hashmap des liens
+                    Object edge = graph.insertEdge(parent, null, new BusArrayList(), v2, v1);
+                    arretEdgeMap.put(currentArret.getNom(), edge); // Enregistrement du lien dans la hashmap des liens
                 }
 
                 // Si fin des arrêts on relie au premier
                 if(i == ligneBus.getArrets().size() - 1){
                     lastArret = ligneBus.getArrets().get(0);
                     Object v2 = arretVertexMap.get(lastArret.getNom());
-                    Object e = graph.insertEdge(parent, null, null, v1, v2);
-                    arretEdgeMap.put(lastArret.getNom(), e); // Enregistrement du lien dans la hashmap des liens
+                    Object edge = graph.insertEdge(parent, null, new BusArrayList(), v1, v2);
+                    arretEdgeMap.put(lastArret.getNom(), edge); // Enregistrement du lien dans la hashmap des liens
                 }
             }
         }
     }
 
+    /**
+     * Méthode permettant la mise à jour du graph en fonction de l'emplacement des bus
+     */
     private void updateGraph() {
         graph.getModel().beginUpdate();
 
@@ -92,15 +103,17 @@ public class GUIReseauBus extends JFrame implements Observateur {
             Arret arretSuivant = bus.getArretSuivant();
             // Mise à jour de l'arrête correspondante à sa prochaine destination
             if(arretSuivant != null){
-                mxCell edge = (mxCell) arretEdgeMap.get(arretSuivant.getNom());
-                edge.setValue(bus);
+                mxCell edge = (mxCell) arretEdgeMap.get(arretSuivant.getNom()); // Récupération du edge
+                BusArrayList busList = (BusArrayList) edge.getValue(); // Récupération de la liste des bus sur ce edge
+                if(!busList.contains(bus))
+                    busList.add(bus); // Ajout du bus sur le edge si non existant
             }
             // Arrivé à l'arrêt prévu, suppression de l'arrête précédente
             else{
                 Arret arretCourant = bus.getArretActuel();
                 mxCell edge = (mxCell) arretEdgeMap.get(arretCourant.getNom());
-                if(edge.getValue() == bus)
-                    edge.setValue(null);
+                BusArrayList busList = (BusArrayList) edge.getValue(); // Récupération de la liste des bus sur ce edge
+                busList.remove(bus);
             }
         }
 
@@ -108,11 +121,19 @@ public class GUIReseauBus extends JFrame implements Observateur {
         graph.refresh();
     }
 
+    /**
+     * Notification lorsque le réseau est mis à jour --> On met à jour l'affichage
+     * @param object Inutilisé ici car référence déjà présente en mémoire
+     */
     @Override
     public void notifier(Object object) {
         updateGraph();
     }
 
+    /**
+     * Lancement du programme
+     * @param args Arguments java
+     */
     public static void main(String[] args) {
         reseauBus = Utils.getReseauBusExample();
         GUIReseauBus frame = new GUIReseauBus();

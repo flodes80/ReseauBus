@@ -35,7 +35,7 @@ public class ConditionCirculation {
             this.tempsArret = tempsArret;
         }
         // On part
-        else{
+        else if(bus.getArretActuel() != null){
             bus.partir();
         }
     }

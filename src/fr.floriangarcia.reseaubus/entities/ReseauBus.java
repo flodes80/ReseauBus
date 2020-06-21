@@ -93,7 +93,7 @@ public class ReseauBus extends Observable {
             System.out.println(bus + " est à l'arrêt dans " + bus.getArretActuel() + ", part dans " + cond.getTempsArret());
         }
         else{
-            if(cond.getTempsTrajet() == 0){
+            if(cond.getTempsTrajet() == 0 && !bus.getArretSuivant().estVide()){
                 System.out.println(bus + " attend que " + bus.getArretSuivant() + " se libère.");
             }
             else{
