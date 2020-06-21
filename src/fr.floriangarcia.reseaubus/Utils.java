@@ -34,7 +34,7 @@ public class Utils {
         Arret arret2 = new Arret("2", 20, 120);
         Arret arret3 = new Arret("3", 20, 220);
         Arret arret4 = new Arret("4", 20, 320);
-        Arret arret5 = new Arret("5", 20, 420);
+        Arret arret5 = new Arret("5", 420, 220);
         Arret arret6 = new Arret("6", 120, 20);
         Arret arret7 = new Arret("7", 220, 20);
         Arret arret8 = new Arret("8", 320, 20);
@@ -51,15 +51,18 @@ public class Utils {
 
         // Attribution ligne de bus aux bus
         bus1.setLigneBus(ligneBus1);
+        bus2.setLigneBus(ligneBus1);
 
         // Attribution arrêt initial au bus
         bus1.setArretActuel(arret1);
+        bus2.setArretActuel(arret2);
 
         // Création du réseau de bus
         ReseauBus reseauBus = new ReseauBus();
 
         // Ajout des bus au réseau de bus
         reseauBus.addBus(bus1);
+        reseauBus.addBus(bus2);
 
         // Ajout des lignes de bus au réseau de bus
         reseauBus.addLigneBus(ligneBus1);

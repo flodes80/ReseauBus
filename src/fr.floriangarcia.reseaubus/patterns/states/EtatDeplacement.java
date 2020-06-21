@@ -7,7 +7,7 @@ public class EtatDeplacement implements EtatBus {
 
     @Override
     public void partir(Bus bus) {
-        System.out.println("Je me déplace déjà !");
+        System.out.println(bus + " est déjà en déplacement !");
     }
 
     @Override
@@ -15,6 +15,7 @@ public class EtatDeplacement implements EtatBus {
         bus.setEtat(new EtatArrete());
         bus.setArretActuel(bus.getArretSuivant());
         bus.setArretSuivant(null);
-        bus.getConditionCirculation().setTempsArret(Utils.getRandomIntBetween(5, 30)); // Temps d'arrêt aléatoire
+        bus.getArretActuel().setBusDansArret(bus);
+        bus.getConditionCirculation().setTempsArret(Utils.getRandomIntBetween(5, 10)); // Temps d'arrêt aléatoire
     }
 }

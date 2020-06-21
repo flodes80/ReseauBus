@@ -77,11 +77,28 @@ public class ReseauBus extends Observable {
                     ConditionCirculation cond = b.getConditionCirculation();
                     cond.setTempsArret(cond.getTempsArret() - 1);
                     cond.setTempsTrajet(cond.getTempsTrajet() - 1);
+
+                    // Affichage
+                    afficheBusStatut(b, cond);
                 });
                 // Notification d'update du réseau
                 notifierObservateurs(this);
             }
         };
         timer.scheduleAtFixedRate(task, 1000, 1000);
+    }
+
+    private void afficheBusStatut(Bus bus, ConditionCirculation cond){
+        if(bus.getArretActuel() != null){
+            System.out.println(bus + " est à l'arrêt dans " + bus.getArretActuel() + ", part dans " + cond.getTempsArret());
+        }
+        else{
+            if(cond.getTempsTrajet() == 0){
+                System.out.println(bus + " attend que " + bus.getArretSuivant() + " se libère.");
+            }
+            else{
+                System.out.println(bus + " voyage vers " + bus.getArretSuivant() + ", arrive dans " + cond.getTempsTrajet());
+            }
+        }
     }
 }

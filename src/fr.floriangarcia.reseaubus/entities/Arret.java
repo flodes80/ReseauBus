@@ -42,6 +42,6 @@ public class Arret extends Observable {
 
     @Override
     public String toString() {
-        return "Arrêt " + nom;
+        return "Arrêt " + nom + " " + (busDansArret != null ? busDansArret : "");
     }
 }

@@ -19,7 +19,7 @@ public class ConditionCirculation {
             this.tempsTrajet = tempsTrajet;
         }
         // On entre à l'arrêt seulement si l'arrêt est vide
-        else if(bus.getArretSuivant().estVide()){
+        else if(bus.getArretSuivant() != null && bus.getArretSuivant().estVide()){
             bus.arriver();
         }
         // Sinon on attend

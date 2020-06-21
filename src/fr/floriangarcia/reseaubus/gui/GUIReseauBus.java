@@ -1,6 +1,6 @@
 package fr.floriangarcia.reseaubus.gui;
 
-import com.mxgraph.model.mxGraphModel;
+import com.mxgraph.model.mxCell;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 import fr.floriangarcia.reseaubus.Utils;
@@ -19,6 +19,7 @@ public class GUIReseauBus extends JFrame implements Observateur {
     private static final long serialVersionUID = -8123406571694511514L;
 
     private static ReseauBus reseauBus;
+    private mxGraph graph;
     private final int largeurRect = 100;
     private final int hauteurRect = 30;
     private HashMap<String, Object> arretVertexMap = new HashMap<>();
@@ -27,6 +28,7 @@ public class GUIReseauBus extends JFrame implements Observateur {
     public GUIReseauBus() {
         super("Reseau de bus");
         mxGraphComponent graphComponent = new mxGraphComponent(getGraphReseauBus());
+        graphComponent.setEnabled(false); // Empêcher modification
 
         JButton startButton = new JButton("Start");
         startButton.addActionListener(actionEvent -> reseauBus.start());
@@ -37,10 +39,12 @@ public class GUIReseauBus extends JFrame implements Observateur {
         getContentPane().add(graphComponent, BorderLayout.CENTER);
         getContentPane().add(startButton, BorderLayout.PAGE_START);
         getContentPane().add(stopButton, BorderLayout.PAGE_END);
+
+        reseauBus.ajouterObservateur(this); // Ajout de sois même en observateur
     }
 
     private mxGraph getGraphReseauBus() {
-        mxGraph graph = new mxGraph();
+        graph = new mxGraph();
         Object parent = graph.getDefaultParent();
 
         graph.getModel().beginUpdate();
@@ -65,8 +69,8 @@ public class GUIReseauBus extends JFrame implements Observateur {
 
                 // Relier arrêt courant avec le précédent
                 if(lastArret != null){
-                    Object v2 = arretVertexMap.get(lastArret.getNom());
-                    Object e = graph.insertEdge(parent, null, "Edge", v2, v1);
+                    Object v2 = arretVertexMap.get(lastArret.getNom()); // Vertex 2
+                    Object e = graph.insertEdge(parent, null, null, v2, v1);
                     arretEdgeMap.put(currentArret.getNom(), e); // Enregistrement du lien dans la hashmap des liens
                 }
 
@@ -82,10 +86,26 @@ public class GUIReseauBus extends JFrame implements Observateur {
     }
 
     private void updateGraph() {
-        for(Bus bus : reseauBus.getBus()){
-            LigneBus ligneBus = bus.getLigneBus();
+        graph.getModel().beginUpdate();
 
+        for(Bus bus : reseauBus.getBus()){
+            Arret arretSuivant = bus.getArretSuivant();
+            // Mise à jour de l'arrête correspondante à sa prochaine destination
+            if(arretSuivant != null){
+                mxCell edge = (mxCell) arretEdgeMap.get(arretSuivant.getNom());
+                edge.setValue(bus);
+            }
+            // Arrivé à l'arrêt prévu, suppression de l'arrête précédente
+            else{
+                Arret arretCourant = bus.getArretActuel();
+                mxCell edge = (mxCell) arretEdgeMap.get(arretCourant.getNom());
+                if(edge.getValue() == bus)
+                    edge.setValue(null);
+            }
         }
+
+        graph.getModel().endUpdate();
+        graph.refresh();
     }
 
     @Override
@@ -98,7 +118,7 @@ public class GUIReseauBus extends JFrame implements Observateur {
         GUIReseauBus frame = new GUIReseauBus();
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(screenSize.width - 50, screenSize.height - 50);
+        frame.setSize(screenSize.width - 150, screenSize.height - 150);
         frame.setVisible(true);
     }
 }
